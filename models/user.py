@@ -6,7 +6,7 @@ from models import storage_type
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
-class User(BaseModel):
+class User(BaseModel, Base):
     """
     Inherits from the BaseModel class and add user's functionalities
     Args:
@@ -30,3 +30,13 @@ class User(BaseModel):
         password = ""
         first_name = ""
         last_name = ""
+
+    def __init__(self, *args, **kwargs):
+        """initializes user"""
+        super().__init__(*args, **kwargs)
+
+    def __setattr__(self, k, v):
+        """sets user pasword"""
+        if k == "password":
+            v = hashlib.md5(v.encode()).hexdigest()
+        super().__setattr__(k, v)
